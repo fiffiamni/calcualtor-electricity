@@ -65,15 +65,31 @@
         </form>
 
         <?php
+        function calculatePower($voltage, $current) {
+            return $voltage * $current;
+        }
+
+        function calculateEnergyPerHour($power) {
+            return ($power * 1000) / 1000; // Convert to kWh
+        }
+
+        function calculateTotalEnergy($energyPerHour) {
+            return $energyPerHour * 24;
+        }
+
+        function calculateTotalCharge($totalEnergy, $currentRate) {
+            return $totalEnergy * ($currentRate / 100);
+        }
+
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $voltage = $_POST["voltage"];
             $current = $_POST["current"];
             $currentRate = $_POST["current-rate"];
 
-            $power = $voltage * $current;
-            $energyPerHour = ($power * 1000) / 1000; // Convert to kWh
-            $totalEnergy = $energyPerHour * 24;
-            $totalCharge = $totalEnergy * ($currentRate / 100);
+            $power = calculatePower($voltage, $current);
+            $energyPerHour = calculateEnergyPerHour($power);
+            $totalEnergy = calculateTotalEnergy($energyPerHour);
+            $totalCharge = calculateTotalCharge($totalEnergy, $currentRate);
 
             echo "<h2>Results:</h2>";
             echo "<p>Power: " . number_format($power, 5) . " kW</p>";
